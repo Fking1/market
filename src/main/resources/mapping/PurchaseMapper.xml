@@ -1,50 +1,68 @@
-<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!--namespace命名空间，为了对sql语句进行隔离，方便管理，mapper开发dao方式，使用namespace有特殊作用  
-mapper代理开发时将namespace指定为mapper接口的全限定名  
- -->
-<mapper namespace="club.fangqcloud.mapper.PurchaseMapper"> 
-<!--在mapper.xml文件中配置很多的sql语句，执行每个sql语句时，封装为MappedStatement对象 
-mapper.xml以statement为单位管理sql语句  
- -->
-	<!-- 添加进货记录 -->
-	<insert id="addPurchase" parameterType="purchase">
-		insert into purchase(productObj,price,purchaseNum,purchaseDate,supplierObj,memo) values 
-		(#{productObj.productId},#{price},#{purchaseNum},#{purchaseDate},#{supplierObj.supplierId},#{memo})
-	</insert>
-
-	<!-- 按照查询条件分页查询进货记录 -->
-	<select id="queryPurchase" resultMap="purchaseMap" >
-		select purchase.* from purchase,product,supplier ${where} and purchase.productObj = product.productId and purchase.supplierObj = supplier.supplierId limit #{startIndex},#{pageSize}
-	</select>
-	<resultMap id="purchaseMap" type="purchase">
-        <id property="purchaseId" column="purchaseId" />
-        <association property="productObj" column="productObj" select="club.fangqcloud.mapper.ProductMapper.getProduct" />
-        <association property="supplierObj" column="supplierObj" select="club.fangqcloud.mapper.SupplierMapper.getSupplier" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="club.fangqcloud.mapper.PurchaseMapper">
+    <resultMap id="BaseResultMap" type="club.fangqcloud.pojo.Purchase">
+        <id column="purchaseId" jdbcType="INTEGER" property="purchaseId" />
+        <result column="productId" jdbcType="INTEGER" property="productId" />
+        <result column="supplierId" jdbcType="INTEGER" property="supplierId" />
+        <result column="price" jdbcType="FLOAT" property="price" />
+        <result column="purchaseNum" jdbcType="INTEGER" property="purchaseNum" />
+        <result column="purchaser" jdbcType="VARCHAR" property="purchaser" />
     </resultMap>
 
-    <!-- 按照查询条件查询所有进货记录 -->
-	<select id="queryPurchaseList" resultMap="purchaseMap" >
-		select purchase.* from purchase,product,supplier ${where} and purchase.productObj = product.productId and purchase.supplierObj = supplier.supplierId
-	</select>
+    <select id="select" resultType="Map" parameterType="club.fangqcloud.pojo.Purchase">
+        select purchase.*, product.productName from purchase,product
+        where product.productId = purchase.productId
+    </select>
 
-    <!-- 按照查询条件的进货记录数 -->
-	<select id="queryPurchaseCount" resultType="int">
-		select count(*) from purchase,product,supplier ${where} and purchase.productObj = product.productId and purchase.supplierObj = supplier.supplierId
-	</select>
+    <select id="selectByName" resultType="Map" parameterType="String">
+         select purchase.*, product.productName from purchase,product
+        where product.productId = purchase.productId and purchaser = #{purchaser}
+    </select>
 
-	<!-- 根据主键查询某个进货记录 -->
-	<select id="getPurchase" parameterType="int" resultMap="purchaseMap">
-		select * from purchase where purchase.purchaseId = #{purchaseId}
-	</select>
+    <insert id="insert" parameterType="club.fangqcloud.pojo.Purchase">
+        insert into purchase
+        <set>
+            <if test="purchaseId != '' and purchaseId != null">
+                purchaseId = #{purchaseId},
+            </if>
+            <if test="productId != '' and productId != null">
+                productId = #{productId},
+            </if>
+            <if test="supplierId != '' and supplierId != null">
+                supplierId = #{supplierId},
+            </if>
+            <if test="price != '' and price != null">
+                price = #{price},
+            </if>
+            <if test="purchaseNum != '' and purchaseNum != null">
+                purchaseNum = #{purchaseNum},
+            </if>
+            <if test="purchaser != '' and purchaser != null">
+                purchaser = #{purchaser},
+            </if>
+        </set>
+    </insert>
 
-	<!-- 更新进货记录 -->
-	<update id="updatePurchase" parameterType="purchase">
-		update purchase set productObj=#{productObj.productId},price=#{price},purchaseNum=#{purchaseNum},purchaseDate=#{purchaseDate},supplierObj=#{supplierObj.supplierId},memo=#{memo} where purchaseId = #{purchaseId}
-	</update>
+    <update id="update" parameterType="club.fangqcloud.pojo.Purchase">
+        update purchase
+        <set>
+            <if test="price != '' and price != null">
+                price = #{price},
+            </if>
+            <if test="productNum != '' and productNum != null">
+                productNum = #{productNum},
+            </if>
+            <if test="purchaser != '' and purchaser != null">
+                purchaser = #{purchaser},
+            </if>
+        </set>
+        where purchaseId = #{purchaseId}
+    </update>
 
-	<!-- 删除进货记录 -->
-	<delete id="deletePurchase" parameterType="int">
-		delete from purchase where purchaseId=#{purchaseId}
-	</delete>
+
+    <delete id="deleteById" parameterType="Integer">
+        delete from purchase where purchaseId = #{purchaseId}
+    </delete>
 
 </mapper>

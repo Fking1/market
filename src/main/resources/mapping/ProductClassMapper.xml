@@ -1,48 +1,60 @@
-<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!--namespace命名空间，为了对sql语句进行隔离，方便管理，mapper开发dao方式，使用namespace有特殊作用  
-mapper代理开发时将namespace指定为mapper接口的全限定名  
- -->
-<mapper namespace="club.fangqcloud.mapper.ProductClassMapper"> 
-<!--在mapper.xml文件中配置很多的sql语句，执行每个sql语句时，封装为MappedStatement对象 
-mapper.xml以statement为单位管理sql语句  
- -->
-	<!-- 添加商品类别记录 -->
-	<insert id="addProductClass" parameterType="productClass">
-		insert into productClass(className,classDesc) values 
-		(#{className},#{classDesc})
-	</insert>
-
-	<!-- 按照查询条件分页查询商品类别记录 -->
-	<select id="queryProductClass" resultMap="productClassMap" >
-		select productClass.* from productClass ${where} limit #{startIndex},#{pageSize}
-	</select>
-	<resultMap id="productClassMap" type="productClass">
-        <id property="classId" column="classId" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="club.fangqcloud.mapper.ProductClassMapper">
+    <resultMap id="BaseResultMap" type="club.fangqcloud.pojo.ProductClass">
+        <id column="classId" jdbcType="INTEGER" property="classId" />
+        <result column="className" jdbcType="VARCHAR" property="className" />
+        <result column="classDesc" jdbcType="VARCHAR" property="classDesc" />
     </resultMap>
 
-    <!-- 按照查询条件查询所有商品类别记录 -->
-	<select id="queryProductClassList" resultMap="productClassMap" >
-		select productClass.* from productClass ${where}
-	</select>
+    <select id="select" resultMap="BaseResultMap" parameterType="club.fangqcloud.pojo.ProductClass">
+        select * from productClass
+        <where>
+            <if test="classId != '' and classId != null">
+                and classId = #{classId}
+            </if>
+            <if test="className != '' and className != null">
+                and className = #{className}
+            </if>
+            <if test="classDesc != '' and classDesc != null">
+                and classDesc = #{classDesc}
+            </if>
+        </where>
+    </select>
 
-    <!-- 按照查询条件的商品类别记录数 -->
-	<select id="queryProductClassCount" resultType="int">
-		select count(*) from productClass ${where}
-	</select>
+    <select id="selectByName" resultMap="BaseResultMap" parameterType="club.fangqcloud.pojo.ProductClass">
+        select * from productClass
+        where className = #{className}
+    </select>
 
-	<!-- 根据主键查询某个商品类别记录 -->
-	<select id="getProductClass" parameterType="int" resultMap="productClassMap">
-		select * from productClass where productClass.classId = #{classId}
-	</select>
+    <insert id="insert" parameterType="club.fangqcloud.pojo.ProductClass">
+        insert into productClass
+        <set>
+            <if test="className != '' and className != null">
+                className = #{className},
+            </if>
+            <if test="classDesc != '' and classDesc != null">
+                classDesc = #{classDesc},
+            </if>
+        </set>
+    </insert>
 
-	<!-- 更新商品类别记录 -->
-	<update id="updateProductClass" parameterType="productClass">
-		update productClass set className=#{className},classDesc=#{classDesc} where classId = #{classId}
-	</update>
+    <update id="update" parameterType="club.fangqcloud.pojo.ProductClass">
+        update productClass
+        <set>
+            <if test="className != '' and className != null">
+                className = #{className},
+            </if>
+            <if test="classDesc != '' and classDesc != null">
+                classDesc = #{classDesc},
+            </if>
+        </set>
+        where classId = #{classId}
+    </update>
 
-	<!-- 删除商品类别记录 -->
-	<delete id="deleteProductClass" parameterType="int">
-		delete from productClass where classId=#{classId}
-	</delete>
+
+    <delete id="deleteById" parameterType="Integer">
+        delete from productClass where classId = #{classId}
+    </delete>
 
 </mapper>

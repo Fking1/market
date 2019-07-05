@@ -5,7 +5,12 @@
         <id column="userId" jdbcType="INTEGER" property="userId" />
         <result column="username" jdbcType="VARCHAR" property="username" />
         <result column="password" jdbcType="VARCHAR" property="password" />
-        <result column="auth" jdbcType="VARCHAR" property="auth" />
+        <result column="userPermission" jdbcType="VARCHAR" property="userPermission" />
+        <result column="productPermission" jdbcType="VARCHAR" property="productPermission" />
+        <result column="purchasePermission" jdbcType="VARCHAR" property="purchasePermission" />
+        <result column="sellPermission" jdbcType="VARCHAR" property="sellPermission" />
+        <result column="supplierPermission" jdbcType="VARCHAR" property="supplierPermission" />
+
     </resultMap>
 
     <select id="selectByUserId" resultMap="BaseResultMap" parameterType="Integer">
@@ -17,7 +22,6 @@
         select * from user
         where username = #{username}
     </select>
-
 
 
 
@@ -33,16 +37,81 @@
             <if test="password != '' and password != null">
                 and password = #{password}
             </if>
-            <if test="auth !='' and auth != null">
-                and auth = #{auth}
+            <if test="userPermission != '' and userPermission != null">
+                and userPermission = #{userPermission}
+            </if>
+            <if test="productPermission != '' and productPermission != null">
+                and productPermission = #{productPermission}
+            </if>
+            <if test="purchasePermission != '' and purchasePermission != null">
+                and purchasePermission = #{purchasePermission}
+            </if>
+            <if test="sellPermission !='' and sellPermission != null">
+                and sellPermission = #{sellPermission}
+            </if>
+            <if test="supplierPermission != '' and supplierPermission != null">
+                and supplierPermission = #{supplierPermission}
             </if>
         </where>
     </select>
 
     <insert id="insertDynatic" parameterType="club.fangqcloud.pojo.User">
         insert into user
-        set username = #{username},
-        password = #{password}
+        <set>
+            <if test="username != '' and username != null">
+                username = #{username},
+            </if>
+            <if test="password != '' and password != null">
+                password = #{password},
+            </if>
+            <if test="userPermission != '' and userPermission != null">
+                userPermission = #{userPermission},
+            </if>
+            <if test="productPermission != '' and productPermission != null">
+                productPermission = #{productPermission},
+            </if>
+            <if test="purchasePermission != '' and purchasePermission != null">
+                purchasePermission = #{purchasePermission},
+            </if>
+            <if test="sellPermission != '' and sellPermission != null">
+                sellPermission = #{sellPermission},
+            </if>
+            <if test="supplierPermission != '' and supplierPermission != null">
+                supplierPermission = #{supplierPermission},
+            </if>
+        </set>
     </insert>
+
+    <update id="updateDynamic" parameterType="club.fangqcloud.pojo.User">
+        update user
+        <set>
+            <if test="username != '' and username != null">
+                username = #{username},
+            </if>
+            <if test="password != '' and password != null">
+                password = #{password},
+            </if>
+            <if test="userPermission != '' and userPermission != null">
+                userPermission = #{userPermission},
+            </if>
+            <if test="productPermission != '' and productPermission != null">
+                productPermission = #{productPermission},
+            </if>
+            <if test="purchasePermission != '' and purchasePermission != null">
+                purchasePermission = #{purchasePermission},
+            </if>
+            <if test="sellPermission != '' and sellPermission != null">
+                sellPermission = #{sellPermission},
+            </if>
+            <if test="supplierPermission != '' and supplierPermission != null">
+                supplierPermission = #{supplierPermission},
+            </if>
+        </set>
+        where userId = #{userId}
+    </update>
+
+    <delete id="deleteByUserId" parameterType="Integer">
+        delete from user where userId = #{userId}
+    </delete>
 
 </mapper>

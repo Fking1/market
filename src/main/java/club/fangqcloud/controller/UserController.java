@@ -3,6 +3,8 @@ package club.fangqcloud.controller;
 import club.fangqcloud.pojo.User;
 import club.fangqcloud.service.UserService;
 import club.fangqcloud.utils.JwtUtil;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import io.jsonwebtoken.Claims;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/user")
@@ -104,5 +108,63 @@ public class UserController {
     }
 
 
+    @RequestMapping("users.do")
+    @ResponseBody
+    public JSON users(Integer page, Integer page_size) {
+        PageHelper.startPage(page, page_size);
+        User user = new User();
+        List<User> users = userService.selectDynatic(user);
+        PageInfo info = new  PageInfo(users);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("status", 0);
+        jsonObject.put("msg", "success");
+        jsonObject.put("data", info);
+        return jsonObject;
+    }
+
+    @RequestMapping("modifyUser.do")
+    @ResponseBody
+    public JSON modifyUser(User user) {
+        JSONObject jsonObject = new JSONObject();
+        if(userService.updateDynamic(user)) {
+            jsonObject.put("status", 0);
+            jsonObject.put("msg", "update success");
+            return jsonObject;
+        }
+
+        jsonObject.put("status", -1);
+        jsonObject.put("msg", "update fail");
+        return jsonObject;
+    }
+
+    @RequestMapping("deleteUser.do")
+    @ResponseBody
+    public JSON deleteUser(Integer userId) {
+        JSONObject jsonObject = new JSONObject();
+        if(userService.deleteByUserId(userId)) {
+            jsonObject.put("status", 0);
+            jsonObject.put("msg", "delete success");
+            return jsonObject;
+        }
+
+        jsonObject.put("status", -1);
+        jsonObject.put("msg", "delete fail");
+        return jsonObject;
+    }
+
+    @RequestMapping("getUserByName.do")
+    @ResponseBody
+    public JSON getUserByName(Integer page, Integer page_size, String username) {
+        PageHelper.startPage(page, page_size);
+        User user = userService.selectByUsername(username);
+        List<User> users = new ArrayList<>();
+        users.add(user);
+        PageInfo info = new  PageInfo(users);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("status", 0);
+        jsonObject.put("msg", "success");
+        jsonObject.put("data", info);
+        return jsonObject;
+    }
 
 }

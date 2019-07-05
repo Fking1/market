@@ -6,7 +6,11 @@ public class User {
   private long userId;
   private String username;
   private String password;
-  private String auth;
+  private String userPermission;
+  private String productPermission;
+  private String purchasePermission;
+  private String sellPermission;
+  private String supplierPermission;
 
 
   public long getUserId() {
@@ -36,12 +40,43 @@ public class User {
   }
 
 
-  public String getAuth() {
-    return auth;
+  public String getUserPermission() {
+    return userPermission;
   }
 
-  public void setAuth(String auth) {
-    this.auth = auth;
+  public void setUserPermission(String userPermission) {
+    this.userPermission = userPermission;
   }
 
+  public String getProductPermission() {
+    return productPermission;
+  }
+
+  public void setProductPermission(String productPermission) {
+    this.productPermission = productPermission;
+  }
+
+  public String getPurchasePermission() {
+    return purchasePermission;
+  }
+
+  public void setPurchasePermission(String purchasePermission) {
+    this.purchasePermission = purchasePermission;
+  }
+
+  public String getSellPermission() {
+    return sellPermission;
+  }
+
+  public void setSellPermission(String sellPermission) {
+    this.sellPermission = sellPermission;
+  }
+
+  public String getSupplierPermission() {
+    return supplierPermission;
+  }
+
+  public void setSupplierPermission(String supplierPermission) {
+    this.supplierPermission = supplierPermission;
+  }
 }

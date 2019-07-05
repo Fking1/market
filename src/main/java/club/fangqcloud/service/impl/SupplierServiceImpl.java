@@ -1,120 +1,53 @@
 package club.fangqcloud.service.impl;
 
-import java.util.ArrayList;
-import javax.annotation.Resource; 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import club.fangqcloud.pojo.Supplier;
 
 import club.fangqcloud.mapper.SupplierMapper;
 @Service
 public class SupplierServiceImpl implements club.fangqcloud.service.SupplierService {
+    @Autowired
+    private SupplierMapper supplierMapper;
 
-	@Resource SupplierMapper supplierMapper;
-    /*每页显示记录数目*/
-    private int rows = 10;;
     @Override
-    public int getRows() {
-		return rows;
-	}
-	@Override
-    public void setRows(int rows) {
-		this.rows = rows;
-	}
-
-    /*保存查询后总的页数*/
-    private int totalPage;
-    @Override
-    public void setTotalPage(int totalPage) {
-        this.totalPage = totalPage;
-    }
-    @Override
-    public int getTotalPage() {
-        return totalPage;
+    public List<Supplier> select(Supplier supplier) {
+        return supplierMapper.select(supplier);
     }
 
-    /*保存查询到的总记录数*/
-    private int recordNumber;
     @Override
-    public void setRecordNumber(int recordNumber) {
-        this.recordNumber = recordNumber;
-    }
-    @Override
-    public int getRecordNumber() {
-        return recordNumber;
+    public Boolean insert(Supplier supplier) {
+        if(supplierMapper.insert(supplier)>0) {
+            return true;
+        }
+
+        return false;
     }
 
-    /*添加制造商记录*/
     @Override
-    public void addSupplier(Supplier supplier) throws Exception {
-    	supplierMapper.addSupplier(supplier);
+    public Boolean update(Supplier supplier) {
+        if(supplierMapper.update(supplier)>0) {
+            return true;
+        }
+
+        return false;
     }
 
-    /*按照查询条件分页查询制造商记录*/
+
     @Override
-    public ArrayList<Supplier> querySupplier(String supplierName, String agent, String phone, int currentPage) throws Exception {
-     	String where = "where 1=1";
-    	if(!supplierName.equals("")) where = where + " and supplier.supplierName like '%" + supplierName + "%'";
-    	if(!agent.equals("")) where = where + " and supplier.agent like '%" + agent + "%'";
-    	if(!phone.equals("")) where = where + " and supplier.phone like '%" + phone + "%'";
-    	int startIndex = (currentPage-1) * this.rows;
-    	return supplierMapper.querySupplier(where, startIndex, this.rows);
+    public List<Supplier> selectByName(String supplierName) {
+        return supplierMapper.selectByName(supplierName);
     }
 
-    /*按照查询条件查询所有记录*/
-    @Override
-    public ArrayList<Supplier> querySupplier(String supplierName, String agent, String phone) throws Exception  {
-     	String where = "where 1=1";
-    	if(!supplierName.equals("")) where = where + " and supplier.supplierName like '%" + supplierName + "%'";
-    	if(!agent.equals("")) where = where + " and supplier.agent like '%" + agent + "%'";
-    	if(!phone.equals("")) where = where + " and supplier.phone like '%" + phone + "%'";
-    	return supplierMapper.querySupplierList(where);
-    }
 
-    /*查询所有制造商记录*/
     @Override
-    public ArrayList<Supplier> queryAllSupplier()  throws Exception {
-        return supplierMapper.querySupplierList("where 1=1");
-    }
+    public Boolean deleteBySupplierId(Integer supplierId) {
+        if(supplierMapper.deleteBySupplierId(supplierId)>0) {
+            return true;
+        }
 
-    /*当前查询条件下计算总的页数和记录数*/
-    @Override
-    public void queryTotalPageAndRecordNumber(String supplierName, String agent, String phone) throws Exception {
-     	String where = "where 1=1";
-    	if(!supplierName.equals("")) where = where + " and supplier.supplierName like '%" + supplierName + "%'";
-    	if(!agent.equals("")) where = where + " and supplier.agent like '%" + agent + "%'";
-    	if(!phone.equals("")) where = where + " and supplier.phone like '%" + phone + "%'";
-        recordNumber = supplierMapper.querySupplierCount(where);
-        int mod = recordNumber % this.rows;
-        totalPage = recordNumber / this.rows;
-        if(mod != 0) totalPage++;
-    }
-
-    /*根据主键获取制造商记录*/
-    @Override
-    public Supplier getSupplier(int supplierId) throws Exception  {
-        Supplier supplier = supplierMapper.getSupplier(supplierId);
-        return supplier;
-    }
-
-    /*更新制造商记录*/
-    @Override
-    public void updateSupplier(Supplier supplier) throws Exception {
-        supplierMapper.updateSupplier(supplier);
-    }
-
-    /*删除一条制造商记录*/
-    @Override
-    public void deleteSupplier(int supplierId) throws Exception {
-        supplierMapper.deleteSupplier(supplierId);
-    }
-
-    /*删除多条制造商信息*/
-    @Override
-    public int deleteSuppliers(String supplierIds) throws Exception {
-    	String _supplierIds[] = supplierIds.split(",");
-    	for(String _supplierId: _supplierIds) {
-    		supplierMapper.deleteSupplier(Integer.parseInt(_supplierId));
-    	}
-    	return _supplierIds.length;
+        return false;
     }
 }

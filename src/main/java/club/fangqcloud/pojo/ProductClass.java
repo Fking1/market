@@ -1,51 +1,45 @@
 package club.fangqcloud.pojo;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.NotEmpty;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class ProductClass {
-    /*类别id*/
-    private Integer classId;
 
-    public Integer getClassId() {
-        return classId;
-    }
+  private long classId;
+  private String className;
+  private String classDesc;
 
-    public void setClassId(Integer classId) {
-        this.classId = classId;
-    }
 
-    /*类别名称*/
-    @NotEmpty(message = "类别名称不能为空")
-    private String className;
+  public long getClassId() {
+    return classId;
+  }
 
-    public String getClassName() {
-        return className;
-    }
+  public void setClassId(long classId) {
+    this.classId = classId;
+  }
 
-    public void setClassName(String className) {
-        this.className = className;
-    }
 
-    /*类别描述*/
-    @NotEmpty(message = "类别描述不能为空")
-    private String classDesc;
+  public String getClassName() {
+    return className;
+  }
 
-    public String getClassDesc() {
-        return classDesc;
-    }
+  public void setClassName(String className) {
+    this.className = className;
+  }
 
-    public void setClassDesc(String classDesc) {
-        this.classDesc = classDesc;
-    }
 
-    public JSONObject getJsonObject() throws JSONException {
-        JSONObject jsonProductClass = new JSONObject();
-        jsonProductClass.accumulate("classId", this.getClassId());
-        jsonProductClass.accumulate("className", this.getClassName());
-        jsonProductClass.accumulate("classDesc", this.getClassDesc());
-        return jsonProductClass;
-    }
+  public String getClassDesc() {
+    return classDesc;
+  }
+
+  public void setClassDesc(String classDesc) {
+    this.classDesc = classDesc;
+  }
+
+  @Override
+  public String toString() {
+    return "ProductClass{" +
+            "classId=" + classId +
+            ", className='" + className + '\'' +
+            ", classDesc='" + classDesc + '\'' +
+            '}';
+  }
 }

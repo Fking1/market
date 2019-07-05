@@ -1,59 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="club.fangqcloud.mapper.ProductMapper">
-
     <resultMap id="BaseResultMap" type="club.fangqcloud.pojo.Product">
-        <id column="productId" jdbcType="INTEGER" property="productId"/>
-        <result column="productName" jdbcType="VARCHAR" property="productName"/>
-        <result column="price" jdbcType="VARCHAR" property="price"/>
-        <result column="productType" jdbcType="INTEGER" property="productType"/>
-        <result column="createTimestamp" jdbcType="TIMESTAMP" property="createTimestamp"/>
-        <result column="changeTimestamp" jdbcType="TIMESTAMP" property="changeTimestamp"/>
+        <id column="productId" jdbcType="INTEGER" property="productId" />
+        <result column="productName" jdbcType="VARCHAR" property="productName" />
+        <result column="classId" jdbcType="INTEGER" property="classId" />
+        <result column="supplierId" jdbcType="INTEGER" property="supplierId" />
+        <result column="price" jdbcType="FLOAT" property="price" />
+        <result column="productDesc" jdbcType="VARCHAR" property="productDesc" />
     </resultMap>
 
-    <resultMap id="productMap" type="product">
-        <id property="productId" column="productId" />
-        <association property="productClassObj" column="productClassObj" select="club.fangqcloud.mapper.ProductClassMapper.getProductClass" />
-        <association property="supplierObj" column="supplierObj" select="club.fangqcloud.mapper.SupplierMapper.getSupplier" />
-    </resultMap>
+    <select id="select" resultMap="BaseResultMap" parameterType="club.fangqcloud.pojo.Product">
+        select * from product
+        <where>
+            <if test="productId != '' and productId != null">
+                and productId = #{productId}
+            </if>
+            <if test="productName != '' and productName != null">
+                and productName = #{productName}
+            </if>
+        </where>
+    </select>
 
-    <!-- 添加商品记录 -->
-    <insert id="addProduct" parameterType="club.fangqcloud.pojo.Product">
-        insert into product(productClassObj,productName,mainPhoto,price,productNum,productDesc,supplierObj) values
-		(#{productClassObj.classId},#{productName},#{mainPhoto},#{price},#{productNum},#{productDesc},#{supplierObj.supplierId})
-	</insert>
+    <select id="selectByName" resultMap="BaseResultMap" parameterType="club.fangqcloud.pojo.Product">
+        select * from product
+        where productName = #{productName}
+    </select>
+
+    <insert id="insert" parameterType="club.fangqcloud.pojo.Product">
+        insert into product
+        <set>
+            <if test="productId != '' and productId != null">
+                productId = #{productId},
+            </if>
+            <if test="productName != '' and productName != null">
+                productName = #{productName},
+            </if>
+            <if test="classId != '' and classId != null">
+                classId = #{classId},
+            </if>
+            <if test="supplierId != '' and supplierId != null">
+                supplierId = #{supplierId},
+            </if>
+            <if test="productDesc != '' and productDesc != null">
+                productDesc = #{productDesc},
+            </if>
+            <if test="price != '' and price != null">
+                price = #{price},
+            </if>
+        </set>
+    </insert>
+
+    <update id="update" parameterType="club.fangqcloud.pojo.Product">
+        update product
+        <set>
+            <if test="price != '' and price != null">
+                price = #{price},
+            </if>
+            <if test="supplierId != '' and supplierId != null">
+                supplierId = #{supplierId},
+            </if>
+            <if test="classId != '' and classId != null">
+                classId = #{classId},
+            </if>
+            <if test="productDesc != '' and productDesc != null">
+                productDesc = #{productDesc},
+            </if>
+        </set>
+        where productId = #{productId}
+    </update>
 
 
-    <!-- 按照查询条件分页查询商品记录 -->
-    <select id="queryProduct" resultMap="productMap" >
-		select product.* from product,productClass,supplier ${where} and product.productClassObj = productClass.classId and product.supplierObj = supplier.supplierId limit #{startIndex},#{pageSize}
-	</select>
-
-
-    <!-- 按照查询条件查询所有商品记录 -->
-    <select id="queryProductList" resultMap="productMap" >
-		select product.* from product,productClass,supplier ${where} and product.productClassObj = productClass.classId and product.supplierObj = supplier.supplierId
-	</select>
-
-    <!-- 按照查询条件的商品记录数 -->
-    <select id="queryProductCount" resultType="int">
-		select count(*) from product,productClass,supplier ${where} and product.productClassObj = productClass.classId and product.supplierObj = supplier.supplierId
-	</select>
-
-    <!-- 根据主键查询某个商品记录 -->
-    <select id="getProduct" parameterType="int" resultMap="productMap">
-		select * from product where product.productId = #{productId}
-	</select>
-
-    <!-- 更新商品记录 -->
-    <update id="updateProduct" parameterType="product">
-		update product set productClassObj=#{productClassObj.classId},productName=#{productName},mainPhoto=#{mainPhoto},price=#{price},productNum=#{productNum},productDesc=#{productDesc},supplierObj=#{supplierObj.supplierId},addTime= where productId = #{productId}
-	</update>
-
-    <!-- 删除商品记录 -->
-    <delete id="deleteProduct" parameterType="int">
-		delete from product where productId=#{productId}
-	</delete>
-
+    <delete id="deleteById" parameterType="Integer">
+        delete from product where productId = #{productId}
+    </delete>
 
 </mapper>

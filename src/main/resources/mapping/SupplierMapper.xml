@@ -1,48 +1,80 @@
-<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!--namespace命名空间，为了对sql语句进行隔离，方便管理，mapper开发dao方式，使用namespace有特殊作用  
-mapper代理开发时将namespace指定为mapper接口的全限定名  
- -->
-<mapper namespace="club.fangqcloud.mapper.SupplierMapper"> 
-<!--在mapper.xml文件中配置很多的sql语句，执行每个sql语句时，封装为MappedStatement对象 
-mapper.xml以statement为单位管理sql语句  
- -->
-	<!-- 添加制造商记录 -->
-	<insert id="addSupplier" parameterType="supplier">
-		insert into supplier(supplierName,agent,phone,address) values 
-		(#{supplierName},#{agent},#{phone},#{address})
-	</insert>
-
-	<!-- 按照查询条件分页查询制造商记录 -->
-	<select id="querySupplier" resultMap="supplierMap" >
-		select supplier.* from supplier ${where} limit #{startIndex},#{pageSize}
-	</select>
-	<resultMap id="supplierMap" type="supplier">
-        <id property="supplierId" column="supplierId" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="club.fangqcloud.mapper.SupplierMapper">
+    <resultMap id="BaseResultMap" type="club.fangqcloud.pojo.Supplier">
+        <id column="supplierId" jdbcType="INTEGER" property="supplierId" />
+        <result column="supplierName" jdbcType="VARCHAR" property="supplierName" />
+        <result column="agent" jdbcType="VARCHAR" property="agent" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="address" jdbcType="VARCHAR" property="address" />
     </resultMap>
 
-    <!-- 按照查询条件查询所有制造商记录 -->
-	<select id="querySupplierList" resultMap="supplierMap" >
-		select supplier.* from supplier ${where}
-	</select>
+    <select id="select" resultMap="BaseResultMap" parameterType="club.fangqcloud.pojo.Supplier">
+        select * from supplier
+        <where>
+            <if test="supplierId != '' and supplierId != null">
+                and supplierId = #{supplierId}
+            </if>
+            <if test="supplierName != '' and supplierName != null">
+                and supplierName = #{supplierName}
+            </if>
+            <if test="agent != '' and agent != null">
+                and agent = #{agent}
+            </if>
+            <if test="phone != '' and phone != null">
+                and phone = #{phone}
+            </if>
+            <if test="address != '' and address != null">
+                and address = #{address}
+            </if>
+        </where>
+    </select>
 
-    <!-- 按照查询条件的制造商记录数 -->
-	<select id="querySupplierCount" resultType="int">
-		select count(*) from supplier ${where}
-	</select>
+    <select id="selectByName" resultMap="BaseResultMap" parameterType="club.fangqcloud.pojo.Supplier">
+        select * from supplier
+        where supplierName = #{supplierName}
+    </select>
 
-	<!-- 根据主键查询某个制造商记录 -->
-	<select id="getSupplier" parameterType="int" resultMap="supplierMap">
-		select * from supplier where supplier.supplierId = #{supplierId}
-	</select>
+    <insert id="insert" parameterType="club.fangqcloud.pojo.Supplier">
+        insert into supplier
+        <set>
+            <if test="supplierName != '' and supplierName != null">
+                supplierName = #{supplierName},
+            </if>
+            <if test="agent != '' and agent != null">
+                agent = #{agent},
+            </if>
+            <if test="phone != '' and phone != null">
+                phone = #{phone},
+            </if>
+            <if test="address != '' and address != null">
+                address = #{address},
+            </if>
+        </set>
+    </insert>
 
-	<!-- 更新制造商记录 -->
-	<update id="updateSupplier" parameterType="supplier">
-		update supplier set supplierName=#{supplierName},agent=#{agent},phone=#{phone},address=#{address} where supplierId = #{supplierId}
-	</update>
+    <update id="update" parameterType="club.fangqcloud.pojo.Supplier">
+        update supplier
+        <set>
+            <if test="supplierName != '' and supplierName != null">
+                supplierName = #{supplierName},
+            </if>
+            <if test="agent != '' and agent != null">
+                agent = #{agent},
+            </if>
+            <if test="phone != '' and phone != null">
+                phone = #{phone},
+            </if>
+            <if test="address != '' and address != null">
+                address = #{address},
+            </if>
+        </set>
+        where supplierId = #{supplierId}
+    </update>
 
-	<!-- 删除制造商记录 -->
-	<delete id="deleteSupplier" parameterType="int">
-		delete from supplier where supplierId=#{supplierId}
-	</delete>
+
+    <delete id="deleteBySupplierId" parameterType="Integer">
+        delete from supplier where supplierId = #{supplierId}
+    </delete>
 
 </mapper>

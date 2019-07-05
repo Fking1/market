@@ -24,7 +24,11 @@ public class UserServiceImpl implements UserService {
     public JSON selectProfile(Integer userId) {
         JSONObject user = new JSONObject();
         user.put("username",userMapper.selectByUserId(userId).getUsername());
-        user.put("auth",userMapper.selectByUserId(userId).getAuth());
+        user.put("userPermission",userMapper.selectByUserId(userId).getUserPermission());
+        user.put("productPermission", userMapper.selectByUserId(userId).getProductPermission());
+        user.put("purchasePermission", userMapper.selectByUserId(userId).getPurchasePermission());
+        user.put("sellPermission", userMapper.selectByUserId(userId).getSellPermission());
+        user.put("supplierPermission", userMapper.selectByUserId(userId).getSupplierPermission());
         return user;
     }
 
@@ -41,6 +45,24 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean insertDynatic(User user) {
         if(userMapper.insertDynatic(user) > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public Boolean updateDynamic(User user) {
+        if(userMapper.updateDynamic(user) > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public Boolean deleteByUserId(Integer userId) {
+        if(userMapper.deleteByUserId(userId)>0) {
             return true;
         }
 

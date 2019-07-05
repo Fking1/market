@@ -13,4 +13,8 @@ public interface UserMapper {
 
     int insertDynatic(User user);
 
+    int updateDynamic(User user);
+
+    int deleteByUserId(Integer userId);
+
 }
